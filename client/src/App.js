@@ -1,19 +1,23 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Navbar from "./components/navbar";
 
-const Home = () => <h2>Home Page</h2>;
-const Services = () => <h2>Services Page</h2>;
+import Home from "./pages/home";
+import Services from "./pages/services";
+import Booking from "./pages/bookings";
+import Login from "./pages/login";
+import Dashboard from "./pages/dashboard";
 
 function App() {
   return (
     <Router>
-      <div>
-        <nav>
-          <Link to="/">Home</Link> | <Link to="/services">Services</Link>
-        </nav>
+      <Navbar />
+      <div style={{ padding: "20px" }}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/services" element={<Services />} />
+          <Route path="/booking" element={<Booking />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </div>
     </Router>
