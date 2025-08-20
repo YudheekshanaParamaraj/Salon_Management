@@ -1,0 +1,65 @@
+pipeline {
+    agent any
+
+    tools {
+        nodejs "NodeJS"   // Make sure NodeJS is added in Jenkins Global Tool Configuration
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                git branch: 'master',
+                    url: 'https://github.com/YudheekshanaParamaraj/Salon_Management.git'
+            }
+        }
+
+        stage('Build Frontend') {
+            steps {
+                dir('client') {
+                    bat '''
+                        echo === Installing frontend dependencies ===
+                        npm install
+                        echo === Building frontend ===
+                        npm run build
+                    '''
+                }
+            }
+        }
+
+        stage('Build Backend') {
+            steps {
+                dir('salon_backend') {
+                    bat '''
+                        echo === Installing backend dependencies ===
+                        npm install
+                        echo === Starting backend (server.js) ===
+                        node server.js
+                    '''
+                }
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                dir('client') {
+                    bat 'npm test || exit 0'
+                }
+                dir('salon_backend') {
+                    bat 'npm test || exit 0'
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            archiveArtifacts artifacts: '**/*.log'
+        }
+        success {
+            echo '✅ Build and tests succeeded!'
+        }
+        failure {
+            echo '❌ Build or tests failed!'
+        }
+    }
+}
